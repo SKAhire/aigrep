@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { showBanner } from "./ui/banner";
+import { showBanner } from "./ui/banner.js";
 
 showBanner();
 program
