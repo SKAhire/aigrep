@@ -1,0 +1,16 @@
+import chalk from "chalk";
+
+export function showBanner(): void {
+  console.log(
+    chalk.cyan(`
+  █████╗ ██╗ ██████╗ ██████╗ ███████╗██████╗ 
+ ██╔══██╗██║██╔════╝ ██╔══██╗██╔════╝██╔══██╗
+ ███████║██║██║  ███╗██████╔╝█████╗  ██████╔╝
+ ██╔══██║██║██║   ██║██╔══██╗██╔══╝  ██╔═══╝ 
+ ██║  ██║██║╚██████╔╝██║  ██║███████╗██║     
+ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝     
+  `),
+  );
+  console.log(chalk.gray("  AI-powered web scraper for your terminal"));
+  console.log(chalk.gray("  v1.0.0\n"));
+}
