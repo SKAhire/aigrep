@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { program } from "commander";
 import { showBanner } from "./ui/banner.js";
 import { configCommand } from "./commands/config.js";
