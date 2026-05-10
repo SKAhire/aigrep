@@ -1,26 +1,39 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
-import { homedir } from "os";
-import { join } from "path";
+import keytar from "keytar";
 
-const CONFIG_DIR = join(homedir(), "./aigrep");
-const CONFIG_FILE = join(CONFIG_DIR, "config.json");
+const SERVICE = "aigrep";
+
+export type Provider = "anthropic" | "openai" | "gemini" | "groq";
 
 export interface Config {
-  provider: "anthropic" | "openai" | "gemini" | "groq";
-  apiKey: string;
+  provider: Provider;
   model: string;
+  apiKey: string;
 }
 
-export function readConfig(): Config | null {
-  if (!existsSync(CONFIG_FILE)) return null;
-  const raw = readFileSync(CONFIG_FILE, "utf-8");
-  return JSON.parse(raw) as Config;
+export async function saveConfig(config: Config): Promise<void> {
+  await keytar.setPassword(SERVICE, "provider", config.provider);
+  await keytar.setPassword(SERVICE, "model", config.model);
+  await keytar.setPassword(SERVICE, "apiKey", config.apiKey);
 }
 
-export function writeConfig(config: Config): void {
-  if (!existsSync(CONFIG_FILE)) {
-    mkdirSync(CONFIG_DIR, { recursive: true });
-  }
+export async function readConfig(): Promise<Config | null> {
+  const provider = await keytar.getPassword(SERVICE, "provider");
+  const model = await keytar.getPassword(SERVICE, "model");
 
-  writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+  if (!provider || !model) return null;
+
+  const apiKey = await keytar.getPassword(SERVICE, "apiKey");
+  if (!apiKey) return null;
+
+  return {
+    provider: provider as Provider,
+    model,
+    apiKey,
+  };
+}
+
+export async function clearConfig(): Promise<void> {
+  await keytar.deletePassword(SERVICE, "provider");
+  await keytar.deletePassword(SERVICE, "model");
+  await keytar.deletePassword(SERVICE, "apiKey");
 }
