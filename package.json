@@ -32,7 +32,8 @@
     "inquirer": "^8.2.6",
     "keytar": "^7.9.0",
     "openai": "^6.37.0",
-    "ora": "^9.4.0"
+    "ora": "^9.4.0",
+    "playwright": "^1.59.1"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.10",
