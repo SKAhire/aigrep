@@ -6,11 +6,13 @@ import { runAI } from "../ai/index.js";
 import { renderTable } from "../output/table.js";
 import { renderJson } from "../output/json.js";
 import { Config } from "../config.js";
+import { fetchPageWithBrowser } from "../scraper/browserFetcher.js";
 
 export interface ScrapeOptions {
   output: "table" | "json";
   save?: string;
   maxChars: string;
+  browser: boolean;
 }
 
 export async function scrapeCommand(
@@ -22,13 +24,20 @@ export async function scrapeCommand(
   console.log(chalk.cyan(`\n  Target : ${url}`));
   console.log(chalk.cyan(`  Prompt : ${prompt}`));
   console.log(chalk.cyan(`  Model  : ${config.provider} / ${config.model}\n`));
+  console.log(
+    chalk.cyan(
+      `  Browser : ${options.browser ? "yes (Playwright)" : "no (axios)"}\n`,
+    ),
+  );
 
   const fetchSpinner = ora("  Fetching page...").start();
 
   let fetchResult;
 
   try {
-    fetchResult = await fetchPage(url);
+    fetchResult = options.browser
+      ? await fetchPageWithBrowser(url)
+      : await fetchPage(url);
     fetchSpinner.succeed(chalk.green(`  Fetched: ${fetchResult.title}`));
   } catch (error: any) {
     fetchSpinner.fail(chalk.red(`  ${error.message}`));

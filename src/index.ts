@@ -26,6 +26,7 @@ program
   .option("-o, --output <format>", "Output format: table | json", "table")
   .option("-s, --save <filename>", "Save results to a file")
   .option("--max-chars <number>", "Max characters to send to AI", "15000")
+  .option("--browser", "Use Playwright for JS-rendered pages", false)
   .action(async (url, prompt, options) => {
     const config = await readConfig();
     if (!config) {
