@@ -169,7 +169,7 @@ aigrep scrape "https://news.ycombinator.com" "get me all post titles" --max-char
 - **No auth support** — aigrep only works on public pages. Pages that redirect to a login screen are blocked automatically.
 - **Static pages only** — JavaScript-rendered content (SPAs) may not be fully captured. Playwright support is planned for v1.1.
 - **Token limits** — Very large pages are truncated to `--max-chars` before being sent to the AI. Adjust this if results seem incomplete.
-- **Site blocking** — Some sites block scrapers via CAPTCHAs or rate limits. aigrep cannot bypass these. Some sites use Cloudflare or other bot protection that blocks headless browsers. Even with --browser, these sites cannot be scraped.
+- **Site blocking** — Some sites block scrapers via CAPTCHAs or rate limits. aigrep cannot bypass these. Some sites use Cloudflare or other bot protection that blocks headless browsers. Even with `--browser`, these sites cannot be scraped.
 
 ---
 
@@ -187,7 +187,7 @@ Keys are never written to disk in plaintext.
 
 ## Roadmap
 
-- [ ] JavaScript-rendered pages via Playwright
+- [x] JavaScript-rendered pages via Playwright
 - [ ] Gemini and Ollama (local models) expanded support
 - [ ] Multi-page / pagination scraping
 - [ ] Interactive mode — chat with a webpage
@@ -197,7 +197,7 @@ Keys are never written to disk in plaintext.
 
 ## License
 
-MIT © 2025 aigrep
+MIT © 2026 aigrep
 
 ---
 
