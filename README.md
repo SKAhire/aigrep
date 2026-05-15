@@ -22,7 +22,50 @@ It fetches the page, cleans the HTML, sends it to your chosen AI model, and retu
 
 ## How it works
 
-![aigrep flow diagram](./flow.svg)
+```mermaid
+flowchart TD
+    A([User runs: aigrep scrape url prompt flags]) --> B
+
+    B[Config check\nRead keychain: provider + key]
+    B -->|no config found| C([Run aigrep config first])
+    B -->|config ok| D
+
+    D{--browser flag?}
+    D -->|no| E[axios fetch\nFast, static pages]
+    D -->|--browser| F[Playwright fetch\nJS-rendered pages]
+
+    E -->|auth wall detected| G([Block + show error])
+    F -->|auth wall detected| H([Block + show error])
+
+    E -->|ok| I
+    F -->|ok| I
+
+    I[Parse HTML\nStrip noise, extract clean text]
+    I --> J
+
+    J[AI extraction\nAnthropic / OpenAI / Gemini / Groq]
+    J --> K
+
+    K{--output flag?}
+    K -->|table| L[Render table\ncli-table3 in terminal]
+    K -->|--output json| M[Render JSON\nFormatted + coloured]
+
+    L -->|--save| N([Save to file: results.json])
+    M -->|--save| O([Save to file: results.json])
+
+    style A fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+    style C fill:#FAECE7,stroke:#993C1D,color:#712B13
+    style G fill:#FAECE7,stroke:#993C1D,color:#712B13
+    style H fill:#FAECE7,stroke:#993C1D,color:#712B13
+    style E fill:#E1F5EE,stroke:#0F6E56,color:#085041
+    style F fill:#E1F5EE,stroke:#0F6E56,color:#085041
+    style I fill:#E1F5EE,stroke:#0F6E56,color:#085041
+    style J fill:#FAEEDA,stroke:#854F0B,color:#633806
+    style L fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+    style M fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+    style N fill:#EAF3DE,stroke:#3B6D11,color:#27500A
+    style O fill:#EAF3DE,stroke:#3B6D11,color:#27500A
+```
 
 ---
 
@@ -172,6 +215,7 @@ aigrep scrape "https://news.ycombinator.com" "get me all post titles" --max-char
 - **Bot protection** — Some sites use Cloudflare or similar protection that blocks scrapers even with `--browser`. aigrep cannot bypass these.
 - **Static pages by default** — JavaScript-rendered content requires the `--browser` flag.
 - **Token limits** — Very large pages are truncated to `--max-chars` before being sent to the AI. Adjust this if results seem incomplete.
+- **Site blocking** — Some sites block scrapers via CAPTCHAs or rate limits regardless of which fetcher is used.
 
 ---
 
@@ -195,7 +239,6 @@ Keys are never written to disk in plaintext.
 - [x] Table + JSON output
 - [ ] Multi-page / pagination scraping
 - [ ] Interactive mode — chat with a webpage
-- [ ] Ollama (local models) expanded support
 
 ---
 
