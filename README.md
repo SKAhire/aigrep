@@ -20,6 +20,12 @@ It fetches the page, cleans the HTML, sends it to your chosen AI model, and retu
 
 ---
 
+## How it works
+
+![aigrep flow diagram](./flow.svg)
+
+---
+
 ## Supported AI Providers
 
 | Provider  | Models                                                         |
@@ -106,10 +112,16 @@ aigrep scrape "https://news.ycombinator.com" "get me all post titles and their l
 aigrep scrape "https://weworkremotely.com" "get me all senior developer job listings with company name and location"
 ```
 
-**Get product info:**
+**Get quotes:**
 
 ```bash
 aigrep scrape "https://quotes.toscrape.com" "get me all quotes and their authors"
+```
+
+**Scrape a JS-rendered site:**
+
+```bash
+aigrep scrape "https://github.com/trending" "get me all trending repos and their descriptions" --browser
 ```
 
 **JSON output:**
@@ -138,6 +150,7 @@ aigrep scrape "https://news.ycombinator.com" "get me all post titles" --max-char
 | ----------------------- | ----------------------------------------- | ------- |
 | `-o, --output <format>` | Output format: `table` or `json`          | `table` |
 | `-s, --save <filename>` | Save results to a file                    | —       |
+| `--browser`             | Use Playwright for JS-rendered pages      | false   |
 | `--max-chars <number>`  | Max characters of page content sent to AI | `15000` |
 
 ---
@@ -153,23 +166,12 @@ aigrep scrape "https://news.ycombinator.com" "get me all post titles" --max-char
 
 ---
 
-## How it works
-
-```
-1. Fetch    → aigrep fetches the page using a browser-like user agent
-2. Parse    → Strips noise (scripts, styles, navs, footers) keeping only content
-3. AI       → Sends cleaned text + your prompt to your chosen AI model
-4. Output   → Renders results as a table or JSON
-```
-
----
-
 ## Limitations
 
 - **No auth support** — aigrep only works on public pages. Pages that redirect to a login screen are blocked automatically.
-- **Static pages only** — JavaScript-rendered content (SPAs) may not be fully captured. Playwright support is planned for v1.1.
+- **Bot protection** — Some sites use Cloudflare or similar protection that blocks scrapers even with `--browser`. aigrep cannot bypass these.
+- **Static pages by default** — JavaScript-rendered content requires the `--browser` flag.
 - **Token limits** — Very large pages are truncated to `--max-chars` before being sent to the AI. Adjust this if results seem incomplete.
-- **Site blocking** — Some sites block scrapers via CAPTCHAs or rate limits. aigrep cannot bypass these. Some sites use Cloudflare or other bot protection that blocks headless browsers. Even with `--browser`, these sites cannot be scraped.
 
 ---
 
@@ -187,11 +189,13 @@ Keys are never written to disk in plaintext.
 
 ## Roadmap
 
-- [x] JavaScript-rendered pages via Playwright
-- [ ] Gemini and Ollama (local models) expanded support
+- [x] Static page scraping via axios
+- [x] JS-rendered pages via Playwright (`--browser`)
+- [x] Anthropic, OpenAI, Gemini, Groq support
+- [x] Table + JSON output
 - [ ] Multi-page / pagination scraping
 - [ ] Interactive mode — chat with a webpage
-- [ ] Scheduled scraping
+- [ ] Ollama (local models) expanded support
 
 ---
 
